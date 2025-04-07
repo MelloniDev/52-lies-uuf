@@ -9,7 +9,7 @@ COPY * /home/host/
 
 WORKDIR /home/host
 
-RUN ["npm", "install"]
+RUN ["npm", "ci", "--include=prod"]
 
 RUN ["npm", "run", "build"]
 
