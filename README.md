@@ -11,6 +11,8 @@ docker compose up -d
 
 ### Dev
 ```sh
+fnm use # Optional
+
 npm ci
 
 npm run dev
