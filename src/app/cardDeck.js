@@ -1,9 +1,7 @@
-export class cardDeck {
-    constructor() {
-        
-        let deckID;
+function createCardDeck() {
 
-        (async ()=>{
+    return new Promise((resolve, reject)=>{
+       (async ()=>{
         
             let req = await fetch("https://deckofcardsapi.com/api/deck/new/");
 
@@ -12,11 +10,18 @@ export class cardDeck {
             let res = await req.json();
 
             deckID = res.deck_id;
-            console.log(res);
-        })();
-    }
+            //console.log(res);
+             
+            resolve(deckID);
+        })(); 
+    })
+    
 }
+
+module.exports = createCardDeck;
 
 // Testing
 
-//let CardDeck = new cardDeck();
+let CardDeck = new createCardDeck().then((deckID)=>{
+    console.log(deckID);
+});
