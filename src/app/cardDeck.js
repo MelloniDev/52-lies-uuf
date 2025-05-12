@@ -1,49 +1,44 @@
 function createCardDeck() {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      let req = await fetch("https://deckofcardsapi.com/api/deck/new/");
 
-    return new Promise((resolve, reject)=>{
-       (async ()=>{
-        
-            let req = await fetch("https://deckofcardsapi.com/api/deck/new/");
+      //console.log(req);
 
-            //console.log(req);
+      let res = await req.json();
 
-            let res = await req.json();
+      deckID = res.deck_id;
+      //console.log(res);
 
-            deckID = res.deck_id;
-            //console.log(res);
-             
-            resolve(deckID);
-        })(); 
-    })
-    
+      resolve(deckID);
+    })();
+  });
 }
 
 function getCards(deckID) {
- 
-    return new Promise((resolve, reject)=>{
-       (async ()=>{
-        
-            let req = await fetch(`https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`);
+  return new Promise((resolve, reject) => {
+    (async () => {
+      let req = await fetch(
+        `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`,
+      );
 
-            //console.log(req);
+      //console.log(req);
 
-            let res = await req.json();
+      let res = await req.json();
 
-             
-            resolve(res.cards);
-        })(); 
-    })
+      resolve(res.cards);
+    })();
+  });
 }
-
 
 module.exports = { createCardDeck, getCards };
 
 // Testing
 
-new createCardDeck().then((deckID)=>{
-    console.log(deckID);
+new createCardDeck().then((deckID) => {
+  console.log(deckID);
 
-    new getCards(deckID).then(cards => {
-        console.log(cards);
-    });
+  new getCards(deckID).then((cards) => {
+    console.log(cards);
+  });
 });
