@@ -7,7 +7,7 @@ function createCardDeck() {
 
       let res = await req.json();
 
-      deckID = res.deck_id;
+    let deckID = res.deck_id;
       //console.log(res);
 
       resolve(deckID);
