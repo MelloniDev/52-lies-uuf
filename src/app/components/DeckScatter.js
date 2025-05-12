@@ -1,38 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { generateDummyDeck } from "../dummyCards";
+import { createCardDeck, getCards } from "../cardDeck";
+import { card } from "../card";
 
 const DeckScatter = () => {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    const cardWidth = 300; // vorher z. B. 120
-    const cardHeight = 400; // vorher z. B. 160
-
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
+    const spread = 300;
 
-    // 💡 Spread wie vorher bei kleinen Karten (ca. 40vw × 90vh)
-    const oldSpreadX = window.innerWidth * 0.2; // 40vw total → ±20vw
-    const oldSpreadY = window.innerHeight * 0.45; // 90vh total → ±45vh
+    new createCardDeck().then((deckID) => {
+      new getCards(deckID).then((cardsFromAPI) => {
+        const scatteredCards = cardsFromAPI.map((card, index) => {
+          const x = centerX + (Math.random() - 0.5) * spread;
+          const y = centerY + (Math.random() - 0.5) * spread;
 
-    const deck = generateDummyDeck().map((card) => {
-      const x =
-        centerX + (Math.random() - 0.5) * oldSpreadX * 2 - cardWidth / 2;
-      const y =
-        centerY + (Math.random() - 0.5) * oldSpreadY * 2 - cardHeight / 2;
+          return {
+            id: `${card.code}-${index}`,
+            image: card.image,
+            value: card.value,
+            suit: card.suit,
+            x,
+            y,
+            rotation: Math.random() * 360 - 180,
+            zIndex: Math.floor(Math.random() * 100),
+          };
+        });
 
-      return {
-        ...card,
-        x,
-        y,
-        rotation: Math.random() * 360 - 180,
-        zIndex: Math.floor(Math.random() * 100),
-      };
+        setCards(scatteredCards);
+      });
     });
-
-    setCards(deck);
   }, []);
 
   return (
@@ -48,8 +48,12 @@ const DeckScatter = () => {
             left: `${card.x}px`,
             transform: `rotate(${card.rotation}deg)`,
             width: "120px",
+            height: "auto",
             zIndex: card.zIndex,
             pointerEvents: "none",
+            display: "block",
+            position: "absolute",
+            objectFit: "contain",
           }}
         />
       ))}
