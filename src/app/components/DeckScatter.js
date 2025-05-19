@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { createCardDeck, getCards } from "../cardDeck";
-import { card } from "../card";
 
 const DeckScatter = () => {
   const [cards, setCards] = useState([]);
+  const [selectedCards, setSelectedCards] = useState([]);
 
   useEffect(() => {
     const centerX = window.innerWidth / 2;
@@ -35,6 +35,17 @@ const DeckScatter = () => {
     });
   }, []);
 
+  const handleCardClick = (cardId) => {
+    setCards((prevCards) => {
+      const cardToSelect = prevCards.find((c) => c.id === cardId);
+      if (!cardToSelect) return prevCards;
+
+      setSelectedCards((prevSelected) => [...prevSelected, cardToSelect]);
+
+      return prevCards.filter((card) => card.id !== cardId);
+    });
+  };
+
   return (
     <div className="w-screen h-screen overflow-hidden bg-green-700 relative">
       {cards.map((card) => (
@@ -50,11 +61,12 @@ const DeckScatter = () => {
             width: "120px",
             height: "auto",
             zIndex: card.zIndex,
-            pointerEvents: "none",
+            pointerEvents: "auto",
             display: "block",
             position: "absolute",
             objectFit: "contain",
           }}
+          onClick={() => handleCardClick(card.id)}
         />
       ))}
     </div>

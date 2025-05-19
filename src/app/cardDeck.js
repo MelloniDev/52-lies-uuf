@@ -7,7 +7,7 @@ function createCardDeck() {
 
       let res = await req.json();
 
-    let deckID = res.deck_id;
+      let deckID = res.deck_id;
       //console.log(res);
 
       resolve(deckID);
@@ -19,7 +19,7 @@ function getCards(deckID) {
   return new Promise((resolve, reject) => {
     (async () => {
       let req = await fetch(
-        `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`,
+        `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`
       );
 
       //console.log(req);
@@ -34,11 +34,3 @@ function getCards(deckID) {
 module.exports = { createCardDeck, getCards };
 
 // Testing
-
-new createCardDeck().then((deckID) => {
-  console.log(deckID);
-
-  new getCards(deckID).then((cards) => {
-    console.log(cards);
-  });
-});
