@@ -30,3 +30,4 @@ Möglichst wenige Kommentare
 Start-Screen  
 Es kann mit den Karten interagiert werden
 Karten die aufgehoben werden, werden zwischengespeichert
+Spielstatus wird in LocalStorage gespeichert
