@@ -24,3 +24,8 @@ npm run dev
 
 Prettier-Formatter
 Möglichst wenige Kommentare
+
+### Todo bis 26.05.25
+
+Start-Screen
+Es kann mit den Karten interagiert werden
