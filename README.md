@@ -22,10 +22,11 @@ npm run dev
 
 ### Coding-Guidelines
 
-Prettier-Formatter
+Prettier-Formatter  
 Möglichst wenige Kommentare
 
 ### Todo bis 26.05.25
 
-Start-Screen
+Start-Screen  
 Es kann mit den Karten interagiert werden
+Karten die aufgehoben werden, werden zwischengespeichert
