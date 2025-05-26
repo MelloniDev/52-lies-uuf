@@ -27,8 +27,8 @@ Möglichst wenige Kommentare
 
 ### Todo bis 26.05.25
 
-Start-Screen  
-Nils: Es kann mit den Karten interagiert werden
+Meo: Start-Screen    
+Nils: Es kann mit den Karten interagiert werden  
 Nils: Karten die aufgehoben werden, werden zwischengespeichert  
 Spielstatus wird in LocalStorage gespeichert
 Zeitdruck implementieren
