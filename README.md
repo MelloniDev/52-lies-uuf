@@ -31,4 +31,6 @@ Meo: Start-Screen
 Nils: Es kann mit den Karten interagiert werden  
 Nils: Karten die aufgehoben werden, werden zwischengespeichert  
 Spielstatus wird in LocalStorage gespeichert
+
+### Todo bis 02.06.25
 Zeitdruck implementieren
