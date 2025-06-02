@@ -13,16 +13,13 @@ const DeckScatter = () => {
       let storedAllCards = getItem("allCards");
       let storedSelectedCards = getItem("selectedCards") || [];
 
-      // Prüfen ob Karten vorhanden und gültig sind
       const cardsAreInvalid =
         !Array.isArray(storedAllCards) || storedAllCards.length === 0;
 
       if (cardsAreInvalid) {
-        // LocalStorage leeren, wenn keine gültigen Karten vorhanden
         removeItem("allCards");
         removeItem("selectedCards");
 
-        // Neues Deck generieren
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
         const spread = 300;
@@ -51,7 +48,6 @@ const DeckScatter = () => {
         setItem("selectedCards", []);
       }
 
-      // Karten bereinigen: ausgewählte entfernen aus verbleibenden
       const filteredCards = storedAllCards.filter(
         (card) => !storedSelectedCards.find((sel) => sel.id === card.id)
       );

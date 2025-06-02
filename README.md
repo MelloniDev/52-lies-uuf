@@ -27,8 +27,14 @@ Möglichst wenige Kommentare
 
 ### Todo bis 26.05.25
 
-Start-Screen  
-Es kann mit den Karten interagiert werden
-Karten die aufgehoben werden, werden zwischengespeichert
-Spielstatus wird in LocalStorage gespeichert
-Zeitdruck implementieren
+- Start-Screen    
+- Nils: Es kann mit den Karten interagiert werden  
+- Nils: Karten die aufgehoben werden, werden zwischengespeichert  
+- Spielstatus wird in LocalStorage gespeichert
+
+### Todo bis 02.06.25
+- Startbutton  
+- Files aufräumen  
+- Kommentare entfernen
+- Naming von Variablen prüfen und verbessern
+- Filenames anpassen
