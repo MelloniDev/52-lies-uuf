@@ -33,4 +33,6 @@ Nils: Karten die aufgehoben werden, werden zwischengespeichert
 Spielstatus wird in LocalStorage gespeichert
 
 ### Todo bis 02.06.25
-Zeitdruck implementieren
+- Startbutton  
+- Files aufräumen  
+- Kommentare entfernen
