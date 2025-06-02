@@ -2,19 +2,40 @@
 
 import { useEffect, useState } from "react";
 import { createCardDeck, getCards } from "../cardDeck";
+import { setItem, getItem, removeItem } from "./Localstorage";
 
 const DeckScatter = () => {
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
 
   useEffect(() => {
+    
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
     const spread = 600;
 
-    new createCardDeck().then((deckID) => {
-      new getCards(deckID).then((cardsFromAPI) => {
-        const scatteredCards = cardsFromAPI.map((card, index) => {
+    const initCards = async () => {
+      let storedAllCards = getItem("allCards");
+      let storedSelectedCards = getItem("selectedCards") || [];
+
+      // Prüfen ob Karten vorhanden und gültig sind
+      const cardsAreInvalid =
+        !Array.isArray(storedAllCards) || storedAllCards.length === 0;
+
+      if (cardsAreInvalid) {
+        // LocalStorage leeren, wenn keine gültigen Karten vorhanden
+        removeItem("allCards");
+        removeItem("selectedCards");
+
+        // Neues Deck generieren
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const spread = 300;
+
+        const deckID = await createCardDeck();
+        const cardsFromAPI = await getCards(deckID);
+
+        storedAllCards = cardsFromAPI.map((card, index) => {
           const x = centerX + (Math.random() - 0.5) * spread;
           const y = centerY + (Math.random() - 0.5) * spread;
 
@@ -32,9 +53,21 @@ const DeckScatter = () => {
           };
         });
 
-        setCards(scatteredCards);
-      });
-    });
+        storedSelectedCards = [];
+        setItem("allCards", storedAllCards);
+        setItem("selectedCards", []);
+      }
+
+      // Karten bereinigen: ausgewählte entfernen aus verbleibenden
+      const filteredCards = storedAllCards.filter(
+        (card) => !storedSelectedCards.find((sel) => sel.id === card.id)
+      );
+
+      setCards(filteredCards);
+      setSelectedCards(storedSelectedCards);
+    };
+
+    initCards();
   }, []);
 
   const handleCardClick = (cardId) => {
@@ -42,6 +75,7 @@ const DeckScatter = () => {
       return prevCards
         .map((card) => {
           if (card.id !== cardId) return card;
+
 
           if (card.isFaceDown) {
             return { ...card, isFaceDown: false };
@@ -51,6 +85,22 @@ const DeckScatter = () => {
           }
         })
         .filter(Boolean);
+
+      const updatedSelected = [...selectedCards, cardToSelect];
+      const updatedRemaining = prevCards.filter((card) => card.id !== cardId);
+
+      setSelectedCards(updatedSelected);
+
+      if (updatedRemaining.length === 0) {
+        removeItem("allCards");
+        removeItem("selectedCards");
+      } else {
+        setItem("allCards", updatedRemaining);
+        setItem("selectedCards", updatedSelected);
+      }
+
+      return updatedRemaining;
+
     });
   };
 
