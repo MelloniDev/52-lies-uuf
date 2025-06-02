@@ -2,19 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { createCardDeck, getCards } from "../cardDeck";
+import { setItem, getItem, removeItem } from "./Localstorage";
 
 const DeckScatter = () => {
   const [cards, setCards] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
 
   useEffect(() => {
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const spread = 300;
+    const initCards = async () => {
+      let storedAllCards = getItem("allCards");
+      let storedSelectedCards = getItem("selectedCards") || [];
 
-    new createCardDeck().then((deckID) => {
-      new getCards(deckID).then((cardsFromAPI) => {
-        const scatteredCards = cardsFromAPI.map((card, index) => {
+      const cardsAreInvalid =
+        !Array.isArray(storedAllCards) || storedAllCards.length === 0;
+
+      if (cardsAreInvalid) {
+        removeItem("allCards");
+        removeItem("selectedCards");
+
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const spread = 300;
+
+        const deckID = await createCardDeck();
+        const cardsFromAPI = await getCards(deckID);
+
+        storedAllCards = cardsFromAPI.map((card, index) => {
           const x = centerX + (Math.random() - 0.5) * spread;
           const y = centerY + (Math.random() - 0.5) * spread;
 
@@ -30,9 +43,20 @@ const DeckScatter = () => {
           };
         });
 
-        setCards(scatteredCards);
-      });
-    });
+        storedSelectedCards = [];
+        setItem("allCards", storedAllCards);
+        setItem("selectedCards", []);
+      }
+
+      const filteredCards = storedAllCards.filter(
+        (card) => !storedSelectedCards.find((sel) => sel.id === card.id)
+      );
+
+      setCards(filteredCards);
+      setSelectedCards(storedSelectedCards);
+    };
+
+    initCards();
   }, []);
 
   const handleCardClick = (cardId) => {
@@ -40,9 +64,20 @@ const DeckScatter = () => {
       const cardToSelect = prevCards.find((c) => c.id === cardId);
       if (!cardToSelect) return prevCards;
 
-      setSelectedCards((prevSelected) => [...prevSelected, cardToSelect]);
+      const updatedSelected = [...selectedCards, cardToSelect];
+      const updatedRemaining = prevCards.filter((card) => card.id !== cardId);
 
-      return prevCards.filter((card) => card.id !== cardId);
+      setSelectedCards(updatedSelected);
+
+      if (updatedRemaining.length === 0) {
+        removeItem("allCards");
+        removeItem("selectedCards");
+      } else {
+        setItem("allCards", updatedRemaining);
+        setItem("selectedCards", updatedSelected);
+      }
+
+      return updatedRemaining;
     });
   };
 

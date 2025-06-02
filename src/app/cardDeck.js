@@ -3,12 +3,9 @@ function createCardDeck() {
     (async () => {
       let req = await fetch("https://deckofcardsapi.com/api/deck/new/");
 
-      //console.log(req);
-
       let res = await req.json();
 
       let deckID = res.deck_id;
-      //console.log(res);
 
       resolve(deckID);
     })();
@@ -22,8 +19,6 @@ function getCards(deckID) {
         `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`
       );
 
-      //console.log(req);
-
       let res = await req.json();
 
       resolve(res.cards);
@@ -32,5 +27,3 @@ function getCards(deckID) {
 }
 
 module.exports = { createCardDeck, getCards };
-
-// Testing
