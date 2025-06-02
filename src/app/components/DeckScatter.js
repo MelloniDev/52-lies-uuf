@@ -9,11 +9,6 @@ const DeckScatter = () => {
   const [selectedCards, setSelectedCards] = useState([]);
 
   useEffect(() => {
-    
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    const spread = 600;
-
     const initCards = async () => {
       let storedAllCards = getItem("allCards");
       let storedSelectedCards = getItem("selectedCards") || [];
@@ -46,10 +41,8 @@ const DeckScatter = () => {
             suit: card.suit,
             x,
             y,
-            back: "https://www.deckofcardsapi.com/static/img/back.png",
             rotation: Math.random() * 360 - 180,
             zIndex: Math.floor(Math.random() * 100),
-            isFaceDown: Math.floor(Math.random() * 10) === 0,
           };
         });
 
@@ -72,19 +65,8 @@ const DeckScatter = () => {
 
   const handleCardClick = (cardId) => {
     setCards((prevCards) => {
-      return prevCards
-        .map((card) => {
-          if (card.id !== cardId) return card;
-
-
-          if (card.isFaceDown) {
-            return { ...card, isFaceDown: false };
-          } else {
-            setSelectedCards((prevSelected) => [...prevSelected, card]);
-            return null;
-          }
-        })
-        .filter(Boolean);
+      const cardToSelect = prevCards.find((c) => c.id === cardId);
+      if (!cardToSelect) return prevCards;
 
       const updatedSelected = [...selectedCards, cardToSelect];
       const updatedRemaining = prevCards.filter((card) => card.id !== cardId);
@@ -100,17 +82,15 @@ const DeckScatter = () => {
       }
 
       return updatedRemaining;
-
     });
   };
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-green-700 relative">
-      Aufgenommen: {selectedCards.length}
       {cards.map((card) => (
         <img
           key={card.id}
-          src={card.isFaceDown ? card.back : card.image}
+          src={card.image}
           alt={`${card.value} of ${card.suit}`}
           className="absolute transition-transform duration-300 ease-in-out"
           style={{
