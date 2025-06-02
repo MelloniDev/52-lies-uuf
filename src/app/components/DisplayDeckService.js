@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createCardDeck, getCards } from "../cardDeck";
-import { setItem, getItem, removeItem } from "./Localstorage";
+import { createCardDeck, getCards } from "./CardDeckService";
+import { setItem, getItem, removeItem } from "./LocalStorageService";
 
 const DeckScatter = () => {
   const [cards, setCards] = useState([]);
