@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createCardDeck, getCards } from "../cardDeck";
-import { setItem, getItem, removeItem } from "./Localstorage";
+import { createCardDeck, getCards } from "./CardDeckService";
+import { setItem, getItem, removeItem } from "./LocalStorageService";
 
-const DeckScatter = () => {
-  const [cards, setCards] = useState([]);
-  const [selectedCards, setSelectedCards] = useState([]);
+const DisplayDeck = () => {
+  const [remainingCards, setCards] = useState([]);
+  const [pickedUpCards, setSelectedCards] = useState([]);
 
   useEffect(() => {
     const initCards = async () => {
-      let storedAllCards = getItem("allCards");
-      let storedSelectedCards = getItem("selectedCards") || [];
+      let cachedCards = getItem("allCards");
+      let cachedSelectedCards = getItem("selectedCards") || [];
 
       const cardsAreInvalid =
-        !Array.isArray(storedAllCards) || storedAllCards.length === 0;
+        !Array.isArray(cachedCards) || cachedCards.length === 0;
 
       if (cardsAreInvalid) {
         removeItem("allCards");
@@ -27,7 +27,7 @@ const DeckScatter = () => {
         const deckID = await createCardDeck();
         const cardsFromAPI = await getCards(deckID);
 
-        storedAllCards = cardsFromAPI.map((card, index) => {
+        cachedCards = cardsFromAPI.map((card, index) => {
           const x = centerX + (Math.random() - 0.5) * spread;
           const y = centerY + (Math.random() - 0.5) * spread;
 
@@ -43,47 +43,49 @@ const DeckScatter = () => {
           };
         });
 
-        storedSelectedCards = [];
-        setItem("allCards", storedAllCards);
+        cachedSelectedCards = [];
+        setItem("allCards", cachedCards);
         setItem("selectedCards", []);
       }
 
-      const filteredCards = storedAllCards.filter(
-        (card) => !storedSelectedCards.find((sel) => sel.id === card.id)
+      const filteredCards = cachedCards.filter(
+        (card) => !cachedSelectedCards.find((sel) => sel.id === card.id)
       );
 
       setCards(filteredCards);
-      setSelectedCards(storedSelectedCards);
+      setSelectedCards(cachedSelectedCards);
     };
 
     initCards();
   }, []);
 
   const handleCardClick = (cardId) => {
-    setCards((prevCards) => {
-      const cardToSelect = prevCards.find((c) => c.id === cardId);
-      if (!cardToSelect) return prevCards;
+    setCards((currentRemainingCards) => {
+      const clickedCard = currentRemainingCards.find((c) => c.id === cardId);
+      if (!clickedCard) return currentRemainingCards;
 
-      const updatedSelected = [...selectedCards, cardToSelect];
-      const updatedRemaining = prevCards.filter((card) => card.id !== cardId);
+      const updatedSelectedCards = [...pickedUpCards, clickedCard];
+      const remainingAfterClick = currentRemainingCards.filter(
+        (card) => card.id !== cardId
+      );
 
-      setSelectedCards(updatedSelected);
+      setSelectedCards(updatedSelectedCards);
 
-      if (updatedRemaining.length === 0) {
+      if (remainingAfterClick.length === 0) {
         removeItem("allCards");
         removeItem("selectedCards");
       } else {
-        setItem("allCards", updatedRemaining);
-        setItem("selectedCards", updatedSelected);
+        setItem("allCards", remainingAfterClick);
+        setItem("selectedCards", updatedSelectedCards);
       }
 
-      return updatedRemaining;
+      return remainingAfterClick;
     });
   };
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-green-700 relative">
-      {cards.map((card) => (
+      {remainingCards.map((card) => (
         <img
           key={card.id}
           src={card.image}
@@ -108,4 +110,4 @@ const DeckScatter = () => {
   );
 };
 
-export default DeckScatter;
+export default DisplayDeck;
