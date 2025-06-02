@@ -1,4 +1,6 @@
 "use client";
+import * as ReactDOM from "react-dom/client";
+import DeckScatter from "./DeckScatter";
 
 function StartScreen() {
   function startButtonPress(e) {
@@ -10,6 +12,9 @@ function StartScreen() {
       element = e.target;
     }
     element.style.display = "none";
+
+    const root = ReactDOM.createRoot(document.querySelector("main"));
+    root.render(<DeckScatter />);
   }
 
   return (
