@@ -1,11 +1,12 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import DisplayDeck from "./components/DisplayDeckService";
+import StartScreen from "./components/startScreen";
+
 
 export default function Home() {
   return (
     <main>
-      <DisplayDeck />
+      <StartScreen />
     </main>
   );
 }
