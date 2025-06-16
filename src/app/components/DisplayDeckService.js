@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createCardDeck, getCards } from "./CardDeckService";
 import { setItem, getItem, removeItem } from "./LocalStorageService";
 
-const DisplayDeck = () => {
+const DisplayDeck = ({ onGameEnd }) => {
   const [remainingCards, setCards] = useState([]);
   const [pickedUpCards, setSelectedCards] = useState([]);
 
@@ -40,6 +40,7 @@ const DisplayDeck = () => {
             y,
             rotation: Math.random() * 360 - 180,
             zIndex: Math.floor(Math.random() * 100),
+            isFaceDown: Math.random() < 0.25,
           };
         });
 
@@ -59,10 +60,24 @@ const DisplayDeck = () => {
     initCards();
   }, []);
 
+  useEffect(() => {
+    if (remainingCards.length === 0 && pickedUpCards.length > 0) {
+      onGameEnd?.();
+    }
+  }, [remainingCards, pickedUpCards, onGameEnd]);
+
   const handleCardClick = (cardId) => {
     setCards((currentRemainingCards) => {
       const clickedCard = currentRemainingCards.find((c) => c.id === cardId);
       if (!clickedCard) return currentRemainingCards;
+
+      if (clickedCard.isFaceDown) {
+        const flippedCards = currentRemainingCards.map((card) =>
+          card.id === cardId ? { ...card, isFaceDown: false } : card
+        );
+        setItem("allCards", flippedCards);
+        return flippedCards;
+      }
 
       const updatedSelectedCards = [...pickedUpCards, clickedCard];
       const remainingAfterClick = currentRemainingCards.filter(
@@ -88,8 +103,12 @@ const DisplayDeck = () => {
       {remainingCards.map((card) => (
         <img
           key={card.id}
-          src={card.image}
-          alt={`${card.value} of ${card.suit}`}
+          src={
+            card.isFaceDown
+              ? "https://www.deckofcardsapi.com/static/img/back.png"
+              : card.image
+          }
+          alt={card.isFaceDown ? "Card back" : `${card.value} of ${card.suit}`}
           className="absolute transition-transform duration-300 ease-in-out"
           style={{
             top: `${card.y}px`,
@@ -102,6 +121,7 @@ const DisplayDeck = () => {
             display: "block",
             position: "absolute",
             objectFit: "contain",
+            cursor: "pointer",
           }}
           onClick={() => handleCardClick(card.id)}
         />
