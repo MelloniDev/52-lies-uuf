@@ -19,15 +19,28 @@ function StartScreen() {
 
   return (
     <div
-      onClick={startButtonPress}
       style={{
-        width: "100px",
-        height: "50px",
-
-        backgroundColor: "red",
+        width: "100%",
+        height: "100%",
       }}
     >
-      <h2>Start</h2>
+      {" "}
+      <div
+        onClick={startButtonPress}
+        style={{
+          width: "100px",
+          height: "50px",
+
+          backgroundColor: "red",
+
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+        }}
+      >
+        {" "}
+        <h2>Start</h2>
+      </div>
     </div>
   );
 }
