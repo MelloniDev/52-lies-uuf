@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createCardDeck, getCards } from "./CardDeckService";
 import { setItem, getItem, removeItem } from "./LocalStorageService";
 
-const DisplayDeck = () => {
+const DisplayDeck = ({ onGameEnd }) => {
   const [remainingCards, setCards] = useState([]);
   const [pickedUpCards, setSelectedCards] = useState([]);
 
@@ -40,7 +40,7 @@ const DisplayDeck = () => {
             y,
             rotation: Math.random() * 360 - 180,
             zIndex: Math.floor(Math.random() * 100),
-            isFaceDown: Math.random() < 0.1,
+            isFaceDown: Math.random() < 0.25,
           };
         });
 
@@ -59,6 +59,12 @@ const DisplayDeck = () => {
 
     initCards();
   }, []);
+
+  useEffect(() => {
+    if (remainingCards.length === 0 && pickedUpCards.length > 0) {
+      onGameEnd?.();
+    }
+  }, [remainingCards, pickedUpCards, onGameEnd]);
 
   const handleCardClick = (cardId) => {
     setCards((currentRemainingCards) => {
