@@ -38,3 +38,9 @@ Möglichst wenige Kommentare
 - Kommentare entfernen
 - Naming von Variablen prüfen und verbessern
 - Filenames anpassen
+
+
+## Azure Deployment  
+Die Webseite ist auf Microsoft Azure Deployed
+[Azure Hosted Site](https://app-kartenspiel-exp-001-fpejbadsdvgrdja7.canadacentral-01.azurewebsites.net)
+
